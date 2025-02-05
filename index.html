@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Speech to Text</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 16px;
+            margin: 0;
+            background: black;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            color: #000;
+        }
+        .voice_to_text {
+            width: 600px;
+            text-align: center;
+        }
+        #convert_text {
+            width: 100%;
+            height: 200px;
+            border-radius: 10px;
+            resize: none;
+            padding: 10px;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="voice_to_text">
+        <textarea id="convert_text"></textarea>
+        <button id="click_to_convert">Click and hold</button>
+    </div>
+
+<script>
+        const button = document.getElementById("click_to_convert");
+        const textArea = document.getElementById("convert_text");
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        let recognition;
+
+        if (SpeechRecognition) {
+            recognition = new SpeechRecognition();
+            recognition.interimResults = true;
+            recognition.lang = "en-US";
+
+            recognition.addEventListener("result", (e) => {
+                const transcript = Array.from(e.results)
+                    .map((result) => result[0].transcript)
+                    .join("");
+                textArea.value = transcript;
+            });
+        } else {
+            alert("Your browser does not support Speech Recognition.");
+        }
+
+        button.addEventListener("mousedown", () => {
+            if (recognition) recognition.start();
+        });
+
+        button.addEventListener("mouseup", () => {
+            if (recognition) recognition.stop();
+        });
+
+        button.addEventListener("mouseleave", () => {
+            if (recognition) recognition.stop();
+        });
+    </script>
+</body>
+</html>
